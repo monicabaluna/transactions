@@ -1,0 +1,16 @@
+web_server:
+    build: .
+    ports:
+        - 5000:5000
+    links:
+        - mongo:mongo
+    volumes:
+        - ./:/opt/transactions:Z
+    command: /opt/transactions/run_server.sh $how
+
+mongo:
+    image: mongo:3.0
+    container_name: mongo
+    command: mongod --smallfiles
+    expose:
+        - 27017
