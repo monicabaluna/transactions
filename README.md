@@ -24,8 +24,8 @@ The server can answer three types of requests:
 form: {“sender”:sender_id(integer), “receiver”: receiver_id(integer),
 “timestamp”: ts(integer), “sum”:x(integer)}. This adds a new transaction into
 the database." All integers must be positive.
-* GET to ​ http://127.0.0.1:5000/transactions/?user=XXXX&day=YYYY&threshold=ZZZZ
-- user value must be a user id (positive integer), threshold must be a positive
+* GET to ​ http://127.0.0.1:5000/transactions/?user=XXXX&day=YYYY&threshold=ZZZZ - user
+value must be a user id (positive integer), threshold must be a positive
 integer and day must be a date of the form "DD-MM-YYYY"
 * GET to ​ http://127.0.0.1:5000/balance/?user=XXXX&since=YYYY&until=ZZZZ​ -
 user value must be a user id (positive integer), since and until must be dates
