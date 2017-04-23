@@ -53,9 +53,9 @@ Documents for increased code readability and stability.
 Each transaction is represented by two entries in the database, of the form
 (sender, receiver, amount, timestamp). Each transaction means:
 * one entry for (+ amount) of money sent from sender to receiver and
-* (- amount) of money sent from receiver to sender.
+* one entry for (- amount) of money sent from receiver to sender.
 
-Even though memory-wise it's inefficient, this designs favors faster querying
+Even though memory-wise it's inefficient, this design favors faster querying
 and may be easily used to later add sharding (for example, shard by
 geographical zones).
 
