@@ -25,8 +25,7 @@ def is_date(date_string):
 def is_positive_int(number_string):
     """ Validator. Verifies if a string represents a number. """
     try:
-        value = int(number_string)
-        return value >= 0
+        return int(number_string) >= 0
     except ValueError:
         return False
 
