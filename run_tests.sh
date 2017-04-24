@@ -7,7 +7,7 @@ if [ "$test_type" = "f" ]; then
     export how='test_function'
 else
     if [ "$test_type" = "p" ]; then
-        export how='test_function'
+        export how='test_performance'
     else
         echo "Invalid choice!"
         exit 0
