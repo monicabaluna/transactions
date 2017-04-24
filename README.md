@@ -75,7 +75,7 @@ information locally
 * by using indexes, both GET queries are significantly improved.
 
 I chose to use a (sender, timestamp) index. Considering each day has
-60 * 60 *24 seconds, filtering by user first is the most efficient method
+60 * 60 * 24 seconds, filtering by user first is the most efficient method
 (since the database has more distinct timestamps than users). This index suits
 this database structure, since most filterings are by sender and timestamp.
 
