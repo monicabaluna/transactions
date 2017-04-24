@@ -12,7 +12,6 @@ import requests
 
 from mongoengine import connect
 
-import api
 from models import Transaction
 import manager
 from utils import get_timestamp, next_date_string
@@ -32,9 +31,6 @@ class ApiPerformanceTestCase(unittest.TestCase):
     """ Class that implements the performance tests set behaviour."""
 
     def setUp(self):
-        self.db_fd, api.APP.config['DATABASE'] = tempfile.mkstemp()
-        api.APP.config['TESTING'] = True
-        self.app = api.APP.test_client()
         connect('transactions_db_test', host='mongo', port=27017)
         self.empty_db()
         self.fill_db()
