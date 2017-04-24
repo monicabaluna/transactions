@@ -9,7 +9,7 @@ from flask import request
 
 HTTP_ERROR_CODE = 400
 MISSING_FIELD_TEMPLATE = 'Missing field \'{}\''
-INVALID_FIELD_DATA_TEMPLATE = 'Invalid data for field \'{}\''
+INVALID_FIELD_TEMPLATE = 'Invalid data for field \'{}\''
 
 def is_date(date_string):
     """ Verifies if a string represents a date. """
@@ -50,11 +50,13 @@ def validate_request_data(request_method, request_attribute, field_validators):
             for field, validator in field_validators:
                 value = data.get(field, None)
                 if value is None:
-                    return (json.dumps({'message': 'Missing field'}),
+                    return (json.dumps({'message':
+                                        MISSING_FIELD_TEMPLATE.format(field)}),
                             HTTP_ERROR_CODE)
 
                 if not validator(value):
-                    return (json.dumps({'message': 'Invalid field'}),
+                    return (json.dumps({'message':
+                                        INVALID_FIELD_TEMPLATE.format(field)}),
                             HTTP_ERROR_CODE)
 
             return routing_handler(*args, **kwargs)
