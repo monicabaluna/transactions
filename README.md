@@ -53,8 +53,9 @@ Each transaction is represented by two entries in the database, of the form
 * one entry for (- amount) of money sent from receiver to sender.
 
 Even though memory-wise it's inefficient, this design favors faster querying
-and may be easily used to later add sharding (for example, shard by
-geographical zones).
+and may be easily used to later add sharding (for example, shard by sender's
+geographical zone). Given the current schema, the 'sender' field could be used
+as sharding key.
 
 Also, this design makes adding indexes very easy.
 
