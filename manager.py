@@ -19,11 +19,14 @@ def add_transaction(sender, receiver, amount, timestamp):
     @param amount - integer representing sent amount
     @param timestamp - integer representing UNIX timestamp
     """
-
-    Transaction(sender=sender, receiver=receiver, amount=amount,
-                timestamp=timestamp).save()
-    Transaction(sender=receiver, receiver=sender, amount=-amount,
-                timestamp=timestamp).save()
+    Transaction.objects.insert([Transaction(sender=sender,
+                                            receiver=receiver,
+                                            amount=amount,
+                                            timestamp=timestamp),
+                                Transaction(sender=receiver,
+                                            receiver=sender,
+                                            amount=-amount,
+                                            timestamp=timestamp)])
 
 def search_transactions(user, day, threshold):
     """
