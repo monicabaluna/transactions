@@ -11,7 +11,7 @@ from flask import Flask, request
 from mongoengine import connect
 
 import manager
-from utils import is_int, is_date, validate_data
+from utils import is_positive_int, is_date, validate_data
 
 HTTP_ERROR_CODE = 400
 
@@ -29,10 +29,10 @@ def handle_transactions():
         data = request.json
 
         # test for valid fields
-        message, valid = validate_data(data, [('sender', is_int),
-                                              ('receiver', is_int),
-                                              ('sum', is_int),
-                                              ('timestamp', is_int)])
+        message, valid = validate_data(data, [('sender', is_positive_int),
+                                              ('receiver', is_positive_int),
+                                              ('sum', is_positive_int),
+                                              ('timestamp', is_positive_int)])
         if not valid:
             return json.dumps({'message': message}), HTTP_ERROR_CODE
 
@@ -45,9 +45,9 @@ def handle_transactions():
         str(data['receiver'])
 
     # test for valid fields
-    message, valid = validate_data(request.args, [('user', is_int),
+    message, valid = validate_data(request.args, [('user', is_positive_int),
                                                   ('day', is_date),
-                                                  ('threshold', is_int)])
+                                                  ('threshold', is_positive_int)])
     if not valid:
         return json.dumps({'message': message}), HTTP_ERROR_CODE
 
@@ -59,7 +59,7 @@ def handle_transactions():
 def get_balance():
     """ Build response for balance page request. """
     # test for valid fields
-    message, valid = validate_data(request.args, [('user', is_int),
+    message, valid = validate_data(request.args, [('user', is_positive_int),
                                                   ('since', is_date),
                                                   ('until', is_date)])
     if not valid:

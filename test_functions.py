@@ -68,16 +68,34 @@ class ApiTestCase(unittest.TestCase):
         assert '3 sent 25$ to 4' in response.text
         assert response.status_code == 200
 
-    def test_bad_add_entry_less_args(self):
+    def test_add_entry_less_args(self):
         """ Test WRONG POST method call - missing fields"""
         payload = {'sender': 3, 'sum': 25, 'timestamp': time.time()}
         response = requests.post(HOME_URL + "transactions/", json=payload)
         assert response.status_code == 400
 
-    def test_bad_add_entry_wrong_args(self):
+    def test_add_entry_invalid_sum(self):
         """ Test WRONG POST method call - invalid fields"""
         payload = {'sender': 3, 'receiver': 4, 'sum': 'drop tables',
                    'timestamp': time.time()}
+        response = requests.post(HOME_URL + "transactions/", json=payload)
+        assert response.status_code == 400
+
+    def test_add_entry_invalid_timestamp(self):
+        """ Test WRONG POST method call - invalid fields"""
+        payload = {'sender': 3, 'receiver': 4, 'sum': 7, 'timestamp': -1}
+        response = requests.post(HOME_URL + "transactions/", json=payload)
+        assert response.status_code == 400
+
+    def test_add_entry_invalid_sender(self):
+        """ Test WRONG POST method call - invalid fields"""
+        payload = {'sender': 'Monica', 'receiver': 4, 'sum': 7, 'timestamp': 3}
+        response = requests.post(HOME_URL + "transactions/", json=payload)
+        assert response.status_code == 400
+
+    def test_add_entry_invalid_receiver(self):
+        """ Test WRONG POST method call - invalid fields"""
+        payload = {'sender': 3, 'receiver': 'X', 'sum': 7, 'timestamp': 3}
         response = requests.post(HOME_URL + "transactions/", json=payload)
         assert response.status_code == 400
 

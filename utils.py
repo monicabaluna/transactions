@@ -22,11 +22,11 @@ def is_date(date_string):
     except ValueError:
         return False
 
-def is_int(number_string):
+def is_positive_int(number_string):
     """ Validator. Verifies if a string represents a number. """
     try:
-        int(number_string)
-        return True
+        value = int(number_string)
+        return value >= 0
     except ValueError:
         return False
 
