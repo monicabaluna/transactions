@@ -11,7 +11,6 @@ import requests
 
 from mongoengine import connect
 
-import api
 from models import Transaction
 import manager
 from utils import get_timestamp
