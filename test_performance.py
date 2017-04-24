@@ -7,7 +7,6 @@ Performance testcases for the transactions API.
 import unittest
 import time
 import random
-import tempfile
 import requests
 
 from mongoengine import connect
