@@ -1,5 +1,6 @@
 # Transactions
 Server app for interacting with a MongoDB transactions database.
+
 Written for Hootsuite Backend Internship Challenge 2017
 
 
