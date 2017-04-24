@@ -21,11 +21,11 @@ Two entries / transaction
 ==============
 
 - index NONE
-  1000 posts in 12.5s
+  1000 posts in 11.6s
   1000 balance in 24.7s
   1000 transactions in 24s
 
 - index ('sender', 'timestamp')
-  1000 posts in 14.8s
+  1000 posts in 13.5s
   1000 balance in 10s
   1000 transactions in 10s
