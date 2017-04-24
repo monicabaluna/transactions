@@ -4,38 +4,28 @@ Server API module.
 """
 
 import sys
-import json
-import logging
 
 from flask import Flask, request
 from mongoengine import connect
 
 import manager
-from utils import is_positive_int, is_date, validate_data
-
-HTTP_ERROR_CODE = 400
+from validators import is_positive_int, is_date, validate_request_data
 
 APP = Flask(__name__)
 APP.config.from_object(__name__)
 
-# Stop displaying received messages
-LOG = logging.getLogger('werkzeug')
-LOG.setLevel(logging.ERROR)
-
 @APP.route('/transactions/', methods=['POST', 'GET'])
+@validate_request_data('POST', 'json', [('sender', is_positive_int),
+                                        ('receiver', is_positive_int),
+                                        ('sum', is_positive_int),
+                                        ('timestamp', is_positive_int)])
+@validate_request_data('GET', 'args', [('user', is_positive_int),
+                                       ('day', is_date),
+                                       ('threshold', is_positive_int)])
 def handle_transactions():
     """ Build response for transactions page request. """
     if request.method == 'POST':
         data = request.json
-
-        # test for valid fields
-        message, valid = validate_data(data, [('sender', is_positive_int),
-                                              ('receiver', is_positive_int),
-                                              ('sum', is_positive_int),
-                                              ('timestamp', is_positive_int)])
-        if not valid:
-            return json.dumps({'message': message}), HTTP_ERROR_CODE
-
         manager.add_transaction(data['sender'],
                                 data['receiver'],
                                 data['sum'],
@@ -44,27 +34,17 @@ def handle_transactions():
         return str(data['sender']) + " sent " + str(data['sum']) + "$ to " + \
         str(data['receiver'])
 
-    # test for valid fields
-    message, valid = validate_data(request.args, [('user', is_positive_int),
-                                                  ('day', is_date),
-                                                  ('threshold', is_positive_int)])
-    if not valid:
-        return json.dumps({'message': message}), HTTP_ERROR_CODE
-
+    # request method is GET
     return str(manager.search_transactions(request.args['user'],
                                            request.args['day'],
                                            request.args['threshold']))
 
-@APP.route('/balance/')
+@APP.route('/balance/', methods=['GET'])
+@validate_request_data('GET', 'args', [('user', is_positive_int),
+                                       ('since', is_date),
+                                       ('until', is_date)])
 def get_balance():
     """ Build response for balance page request. """
-    # test for valid fields
-    message, valid = validate_data(request.args, [('user', is_positive_int),
-                                                  ('since', is_date),
-                                                  ('until', is_date)])
-    if not valid:
-        return json.dumps({'message': message}), HTTP_ERROR_CODE
-
     balance = manager.get_balance(request.args['user'],
                                   request.args['since'],
                                   request.args['until'])
