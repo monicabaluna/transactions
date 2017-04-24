@@ -80,7 +80,8 @@ I chose to use a (sender, timestamp) index. Considering each day has
 this database structure, since most filterings are by sender and timestamp.
 
 After running performance tests, this design appeared to be the most efficient.
-Test results may be found in results.txt.
+Test results for different database structures and used indexes may be found in
+results.txt.
 
 
 ## Testing API
