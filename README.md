@@ -8,13 +8,11 @@ Written for Hootsuite Backend Internship Challenge 2017
 Transactions is a server app written in Python 2, using Flask and MongoEngine.
 To run the app, just type:
 ```sh
-$ chmod +x run.sh
 $ ./run.sh
 ```
 
 To run functionality or performance tests:
 ```sh
-$ chmod +x run_tests.sh
 $ ./run_tests.sh
 ```
 
