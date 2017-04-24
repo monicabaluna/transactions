@@ -35,7 +35,7 @@ class ApiPerformanceTestCase(unittest.TestCase):
         self.db_fd, api.APP.config['DATABASE'] = tempfile.mkstemp()
         api.APP.config['TESTING'] = True
         self.app = api.APP.test_client()
-        connect('transactions_db_test')
+        connect('transactions_db_test', host='mongo', port=27017)
         self.empty_db()
         self.fill_db()
         random.seed()
