@@ -6,7 +6,6 @@ Testcases for the transactions API.
 import unittest
 import time
 from collections import defaultdict
-import tempfile
 import requests
 
 from mongoengine import connect
@@ -22,6 +21,8 @@ DAY_STRING2 = '13-03-2010'
 
 MAX_USERS = 100
 MAX_SUM = 200
+
+HTTP_ERROR_CODE = 400
 
 
 class ApiTestCase(unittest.TestCase):
@@ -71,32 +72,32 @@ class ApiTestCase(unittest.TestCase):
         """ Test WRONG POST method call - missing fields"""
         payload = {'sender': 3, 'sum': 25, 'timestamp': time.time()}
         response = requests.post(HOME_URL + "transactions/", json=payload)
-        assert response.status_code == 400
+        assert response.status_code == HTTP_ERROR_CODE
 
-    def test_add_entry_invalid_sum(self):
-        """ Test WRONG POST method call - invalid fields"""
+    def test_add_entry_wrong_sum(self):
+        """ Test WRONG POST method call - wrong sum"""
         payload = {'sender': 3, 'receiver': 4, 'sum': 'drop tables',
                    'timestamp': time.time()}
         response = requests.post(HOME_URL + "transactions/", json=payload)
-        assert response.status_code == 400
+        assert response.status_code == HTTP_ERROR_CODE
 
-    def test_add_entry_invalid_timestamp(self):
-        """ Test WRONG POST method call - invalid fields"""
+    def test_add_entry_wrong_time(self):
+        """ Test WRONG POST method call - wrong timestamp"""
         payload = {'sender': 3, 'receiver': 4, 'sum': 7, 'timestamp': -1}
         response = requests.post(HOME_URL + "transactions/", json=payload)
-        assert response.status_code == 400
+        assert response.status_code == HTTP_ERROR_CODE
 
-    def test_add_entry_invalid_sender(self):
-        """ Test WRONG POST method call - invalid fields"""
+    def test_add_entry_wrong_sender(self):
+        """ Test WRONG POST method call - wrong sender"""
         payload = {'sender': 'Monica', 'receiver': 4, 'sum': 7, 'timestamp': 3}
         response = requests.post(HOME_URL + "transactions/", json=payload)
-        assert response.status_code == 400
+        assert response.status_code == HTTP_ERROR_CODE
 
-    def test_add_entry_invalid_receiver(self):
-        """ Test WRONG POST method call - invalid fields"""
+    def test_add_entry_wrong_receiver(self):
+        """ Test WRONG POST method call - wrong receiver"""
         payload = {'sender': 3, 'receiver': 'X', 'sum': 7, 'timestamp': 3}
         response = requests.post(HOME_URL + "transactions/", json=payload)
-        assert response.status_code == 400
+        assert response.status_code == HTTP_ERROR_CODE
 
     def test_get_transactions(self):
         """ Test the GET TRANSACTIONS method - for listing user transactions
@@ -118,37 +119,64 @@ class ApiTestCase(unittest.TestCase):
         assert ("timestamp': " + str(bad_ts)) not in response.text
         assert "timestamp': " + str(good_ts) in response.text
 
-    def test_bad_get_transactions_less_args(self):
+    def test_get_transactions_less_args(self):
         """ Test WRONG GET TRANSACTIONS method call - missing fields. """
         response = requests.get(HOME_URL +
                                 "transactions/?user=12&threshold=14")
-        assert response.status_code == 400
+        assert response.status_code == HTTP_ERROR_CODE
 
-    def test_bad_get_transactions_wrong_args(self):
-        """ Test WRONG GET TRANSACTIONS method call - invalid fields. """
+    def test_get_transactions_wrong_user(self):
+        """ Test WRONG GET TRANSACTIONS method call - wrong user. """
         response = requests.get(HOME_URL + "transactions/?user=abc&day=" +
                                 DAY_STRING1 + "&threshold=14")
-        assert response.status_code == 400
+        assert response.status_code == HTTP_ERROR_CODE
+
+    def test_get_transactions_wrong_day(self):
+        """ Test WRONG GET TRANSACTIONS method call - wrong day. """
+        response = requests.get(HOME_URL + "transactions/?user=1&day=3-06" +
+                                "&threshold=14")
+        assert response.status_code == HTTP_ERROR_CODE
+
+    def test_get_transactions_wrong_threshold(self):
+        """ Test WRONG GET TRANSACTIONS method call - wrong threshold. """
+        response = requests.get(HOME_URL + "transactions/?user=1&day=" +
+                                DAY_STRING1 + "&threshold=-14")
+        assert response.status_code == HTTP_ERROR_CODE
 
     def test_balance(self):
         """ Test GET BALANCE method - for computing a user's balance over a
             given time interval.
         """
-        response = requests.get(HOME_URL + "balance/?user=12&since=" +
-                                DAY_STRING1 + "&until=" + DAY_STRING2)
-        assert response.text == str(self.balance[12])
-        assert response.status_code == 200
+        for user in range(0, MAX_USERS):
+            response = requests.get(HOME_URL + "balance/?user=" + str(user) +
+                                    "&since=" + DAY_STRING1 + "&until=" +
+                                    DAY_STRING2)
+            assert response.text == str(self.balance[user])
+            assert response.status_code == 200
 
-    def test_bad_balance_less_args(self):
-        """ Test WRONG GET BALANCE method call - missing fields. """
+    def test_balance_missing_days(self):
+        """ Test WRONG GET BALANCE method call - missing day fields. """
         response = requests.get(HOME_URL + "balance/?user=12")
-        assert response.status_code == 400
+        assert response.status_code == HTTP_ERROR_CODE
 
-    def test_bad_balance_wrong_args(self):
-        """ Test WRONG GET BALANCE method call - invalid fields. """
+    def test_balance_missing_user(self):
+        """ Test WRONG GET BALANCE method call - missing user field. """
+        response = requests.get(HOME_URL + "balance/?since=" + DAY_STRING1 +
+                                "&until=" + DAY_STRING2)
+        assert response.status_code == HTTP_ERROR_CODE
+
+    def test_bad_balance_wrong_date(self):
+        """ Test WRONG GET BALANCE method call - wrong date value. """
         response = requests.get(HOME_URL + 'balance/?user=12&since=103-2017' +
                                 '&until=10-04-2017')
-        assert response.status_code == 400
+        assert response.status_code == HTTP_ERROR_CODE
+
+    def test_bad_balance_wrong_user(self):
+        """ Test WRONG GET BALANCE method call - wrong user value. """
+        response = requests.get(HOME_URL +
+                                'balance/?user=1.2&since=03-03-2017' +
+                                '&until=10-04-2017')
+        assert response.status_code == HTTP_ERROR_CODE
 
 if __name__ == '__main__':
     unittest.main()
