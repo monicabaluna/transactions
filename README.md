@@ -41,7 +41,7 @@ The app is divided into three main functionalities:
  posting new transactions, querying for transactions during given days or
  querying for a user's balance over a given time periods.
 
-Since the database objects have a fixed schema, I chose to use MongoEngine's
+Since the database objects have a fixed scheme, I chose to use MongoEngine's
 Documents for increased code readability and stability.
 
 
@@ -54,7 +54,7 @@ Each transaction is represented by two entries in the database, of the form
 
 Even though memory-wise it's inefficient, this design favors faster querying
 and may be easily used to later add sharding (for example, shard by sender's
-geographical zone). Given the current schema, the 'sender' field could be used
+geographical zone). Given the current scheme, the 'sender' field could be used
 as sharding key.
 
 Also, this design makes adding indexes very easy.
