@@ -23,6 +23,7 @@ MAX_USERS = 100
 MAX_SUM = 200
 
 HTTP_ERROR_CODE = 400
+HTTP_SUCCESS_CODE = 200
 
 
 class ApiTestCase(unittest.TestCase):
@@ -66,7 +67,7 @@ class ApiTestCase(unittest.TestCase):
                    'timestamp': time.time()}
         response = requests.post(HOME_URL + "transactions/", json=payload)
         assert '3 sent 25$ to 4' in response.text
-        assert response.status_code == 200
+        assert response.status_code == HTTP_SUCCESS_CODE
 
     def test_add_entry_less_args(self):
         """ Test WRONG POST method call - missing fields"""
@@ -108,7 +109,7 @@ class ApiTestCase(unittest.TestCase):
         bad_ts = get_timestamp(DAY_STRING2) + 1
         good_ts = get_timestamp(DAY_STRING1)
 
-        assert response.status_code == 200
+        assert response.status_code == HTTP_SUCCESS_CODE
         assert 'sender":', u'2' in response.text
         assert 'receiver":', u'2' in response.text
         assert 'sender":', u'1' in response.text
@@ -152,7 +153,7 @@ class ApiTestCase(unittest.TestCase):
                                     "&since=" + DAY_STRING1 + "&until=" +
                                     DAY_STRING2)
             assert response.text == str(self.balance[user])
-            assert response.status_code == 200
+            assert response.status_code == HTTP_SUCCESS_CODE
 
     def test_balance_missing_days(self):
         """ Test WRONG GET BALANCE method call - missing day fields. """
@@ -177,6 +178,14 @@ class ApiTestCase(unittest.TestCase):
                                 'balance/?user=1.2&since=03-03-2017' +
                                 '&until=10-04-2017')
         assert response.status_code == HTTP_ERROR_CODE
+
+    def test_invalid_post(self):
+        """ Test invalid POST method. """
+        payload = {'sender': 3, 'receiver': 4, 'sum': 25,
+                   'timestamp': time.time()}
+        response = requests.post(HOME_URL + "transactions/", data=payload)
+        assert response.status_code == HTTP_ERROR_CODE
+
 
 if __name__ == '__main__':
     unittest.main()

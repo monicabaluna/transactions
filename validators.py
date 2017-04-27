@@ -9,6 +9,7 @@ from flask import request
 from functools import wraps
 
 HTTP_ERROR_CODE = 400
+INVALID_REQUEST_MESSAGE = 'Invalid request'
 MISSING_FIELD_TEMPLATE = 'Missing field \'{}\''
 INVALID_FIELD_TEMPLATE = 'Invalid data for field \'{}\''
 
@@ -47,7 +48,9 @@ def validate_request_data(request_method, request_attribute, field_validators):
             data = getattr(request, request_attribute)
 
             if not data:
-                return routing_handler(*args, **kwargs)
+                return (json.dumps({'message':
+                                    INVALID_REQUEST_MESSAGE}),
+                        HTTP_ERROR_CODE)
 
             for field, validator in field_validators:
                 value = data.get(field, None)
