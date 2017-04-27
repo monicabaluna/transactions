@@ -6,6 +6,7 @@ Validator functions module.
 from datetime import datetime
 import json
 from flask import request
+from functools import wraps
 
 HTTP_ERROR_CODE = 400
 MISSING_FIELD_TEMPLATE = 'Missing field \'{}\''
@@ -35,6 +36,7 @@ def validate_request_data(request_method, request_attribute, field_validators):
     """
     def validate_data(routing_handler):
         """ Decorates the routing_handler. """
+        @wraps(routing_handler)
         def decorated_handler(*args, **kwargs):
             """
             Validates fields and calls the routing handler if fields are valid.
@@ -60,10 +62,6 @@ def validate_request_data(request_method, request_attribute, field_validators):
                             HTTP_ERROR_CODE)
 
             return routing_handler(*args, **kwargs)
-
-        # Flask uses function names internally to look for existing handlers,
-        # so each decorated handler should have a unique name
-        decorated_handler.__name__ = 'validated_' + routing_handler.__name__
 
         return decorated_handler
 
