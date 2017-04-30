@@ -1,5 +1,5 @@
 Single entry / transaction
-==============
+==========================
 
 - index NONE
   1000 posts in 10.2s
@@ -18,7 +18,7 @@ Single entry / transaction
 
 
 Two entries / transaction
-==============
+=========================
 
 - index NONE
   1000 posts in 11.6s
